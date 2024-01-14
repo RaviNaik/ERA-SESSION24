@@ -1,0 +1,132 @@
+1. Pseudo_code for __init__
+
+FUNCTION  __init__(self, grid):
+# Check if the provided grid is a list, and if so, convert it to the desired grid format
+  IF type of grid is list:
+      SET grid to the result of makeGrid(grid)
+  # Assign the grid to the instance variable
+      SET self.grid to grid
+  # Set default values for some parameters
+      SET self.livingReward to 0.0
+      SET self.noise to 0.2
+
+2. Pseudo_code for getQValue()
+
+FUNCTION getQValue(state, action):
+    # Get the feature vector for the given state-action pair.
+    SET features to featExtractor.getFeatures(state, action)
+
+    # Initialize Q-value to zero.
+    SET qvalue to 0
+
+    # Iterate over each feature in the feature vector and compute the dot product with corresponding weight.
+    FOR EACH feature IN features:
+        qvalue += features[feature] * weights[feature]
+
+    # Return the computed Q-value.
+    RETURN qvalue
+
+3. Pseudo_code for computeValueFromQValue
+
+FUNCTION computeValueFromQValues(state):
+    SET actions to getLegalActions(state)
+    IF length of actions is 0 THEN
+        RETURN 0.0
+    ENDIF
+
+    SET maxValue to negative infinity
+    FOR EACH action IN actions DO
+        IF maxValue <= getQValue(state, action) OR maxValue is negative infinity THEN
+            SET maxValue to getQValue(state, action)
+        ENDIF
+    ENDFOR
+
+    RETURN maxValue
+
+4. Pseudo_code for computeActionFromQValues
+FUNCTION computeActionFromQValues(state):
+    # Get legal actions for the given state
+    actions = getLegalActions(state)
+
+    # If there are no legal actions, return None
+    If length of actions is 0:
+        Return None
+
+    # Initialize maxValue to negative infinity and stateAction to an empty string
+    SET maxValue  tonegative infinity
+    SET stateAction to ""
+
+    # Iterate over each action
+    For each action in actions:
+        # If the Q-value for the current action is greater than maxValue or maxValue is negative infinity
+        If maxValue <= getQValue(state, action) or maxValue is negative infinity:
+            # Update maxValue with the Q-value of the current action
+            SET maxValue to getQValue(state, action)
+            
+            # Update stateAction with the current action
+
+    # Return the best action
+    Return stateAction
+
+5. Pseudo_code for getAction
+FUNCTION getAction(state):
+    # Get legal actions for the current state
+    SET legalActions to getLegalActions(state)
+
+    # If there are no legal actions, return None
+    If length of legalActions is 0:
+        Return None
+
+    # Initialize action to None
+    SET action to None
+
+    # If a random coin flip with probability self.epsilon is True
+    If flipCoin(self.epsilon):
+        # Choose a random action from the legal actions
+        SET action to random.choice(legalActions)
+    # Otherwise
+    Else:
+        # Use the Q-value computation method to get the best action
+        SET action to computeActionFromQValues(state)
+
+    # Return the chosen action
+    Return action
+
+6. Pseudo_code for update
+FUNCTION update(state, action, nextState, reward):
+    # Compute the temporal difference error
+    difference = reward + self.discount * getValue(nextState) - getQValue(state, action)
+
+    # Get the features for the current state-action pair
+    features = featExtractor.getFeatures(state, action)
+
+    # Update weights based on the features and the temporal difference error
+    For each feature in features:
+        self.weights[feature] = self.weights[feature] + alpha * features[feature] * difference
+
+7.Model Architecture
+class Network(nn.Module):
+   
+    def __init__(self, input_size, nb_action):
+        super(Network, self).__init__()
+        self.input_size = input_size
+        self.nb_action = nb_action
+        self.fc1 = nn.Linear(input_size, 30)
+        self.fc2 = nn.Linear(30,30)
+        self.fc3 = nn.Linear(30, nb_action)
+   
+    def forward(self, state):
+        x = F.relu(self.fc1(state))
+        q_values = F.relu(self.fc2(x))
+        q_values = self.fc3(x)
+        return q_values
+
+
+8. What happens when "boundary-signal" is weak when compared to the last reward?
+Ans: When the boundary-signal is weak relative to the last reward, the car tends to get stuck at the boundary. It struggles to return to the road or to reach its intended goal.
+
+9. What happens when Temperature is reduced? 
+Ans: Car movement was fluctuating very rapidly
+
+10. What is the effect of reducing gamma?
+Ans:  Car was moving straight and getting fixed into loops.
