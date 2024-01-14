@@ -7,7 +7,7 @@ Setup Berkely Ai RL course experiments.
 1. :heavy_check_mark: Share a screenshot of you running the whole code on your computer. 
 2. :heavy_check_mark: You would need to find code for some files to run it successfully.
 3. :heavy_check_mark: Once done, understand the code you copied and write a pseudo-code to explain what is happening. You need to explain:
-   ```python
+```python
  1. __ init__
  2. getQValue
  3. computeValueFromQValue
